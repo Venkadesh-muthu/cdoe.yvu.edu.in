@@ -1,0 +1,25 @@
+# Environment
+.env
+
+# Composer
+vendor/
+
+# CodeIgniter
+writable/
+
+# Zip files
+*.zip
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# Node
+node_modules/
+
+# Windows
+Thumbs.db
+Desktop.ini
