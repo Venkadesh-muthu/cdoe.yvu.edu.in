@@ -55,6 +55,8 @@ $routes->group('admin', function ($routes) {
     $routes->get('/', 'AdminController::index');
     $routes->get('login', 'AdminController::login');
     $routes->post('loginProcess', 'AdminController::loginProcess');
+    $routes->get('reset-password', 'AdminController::resetPassword');
+    $routes->post('reset-password', 'AdminController::resetPasswordProcess');
     $routes->post('validateDeb', 'AdminController::validateDeb');
     $routes->post('registerStudent', 'AdminController::registerStudent');
     $routes->get('logout', 'AdminController::logout');

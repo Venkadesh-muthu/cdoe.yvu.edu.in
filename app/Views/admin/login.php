@@ -44,6 +44,14 @@
                         YVU Cdoe Admin Login
                     </h2>
 
+                    <?php if (session()->getFlashdata('success')): ?>
+
+                        <div class="alert alert-success text-center py-2">
+                            <?= esc(session()->getFlashdata('success')) ?>
+                        </div>
+
+                    <?php endif; ?>
+
                     <!-- Flash Error -->
                     <?php if (session()->getFlashdata('error')): ?>
 
@@ -110,6 +118,12 @@
                                 Login
                             </button>
 
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <a href="<?= base_url('/admin/reset-password') ?>" class="fs-12 text-primary">
+                                Forgot / Reset Password?
+                            </a>
                         </div>
 
                     </form>

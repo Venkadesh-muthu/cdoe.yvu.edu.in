@@ -419,6 +419,14 @@ class AdminController extends BaseController
 
         return view('/admin/login');
     }
+
+    public function resetPassword()
+    {
+        helper('captcha');
+
+        return view('/admin/reset_password');
+    }
+
     public function loginProcess()
     {
         $email = $this->request->getPost('email');
@@ -466,6 +474,52 @@ class AdminController extends BaseController
 
         return redirect()->to('/admin/dashboard');
     }
+
+    public function resetPasswordProcess()
+    {
+        $rules = [
+            'email'       => 'required|valid_email',
+            'mobile'      => 'required|numeric|min_length[10]|max_length[10]',
+            'debuniqueid' => 'required',
+            'password'    => 'required|min_length[6]',
+            'c_password'  => 'required|matches[password]',
+            'captcha'     => 'required',
+        ];
+
+        if (! $this->validate($rules)) {
+            return redirect()->back()
+                ->withInput()
+                ->with('errors', $this->validator->getErrors());
+        }
+
+        $captcha = new CaptchaService();
+
+        if (! $captcha->verify($this->request->getPost('captcha'))) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Invalid CAPTCHA. Please try again.');
+        }
+
+        $student = $this->debStudentModel
+            ->where('email', trim((string) $this->request->getPost('email')))
+            ->where('mobile', trim((string) $this->request->getPost('mobile')))
+            ->where('deb_unique_id', trim((string) $this->request->getPost('debuniqueid')))
+            ->first();
+
+        if (! $student) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'The details entered do not match any registered student.');
+        }
+
+        $this->debStudentModel->update($student['id'], [
+            'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+        ]);
+
+        return redirect()->to('/admin/login')
+            ->with('success', 'Password reset successfully. Please login with your new password.');
+    }
+
     public function logout()
     {
         session()->destroy();
