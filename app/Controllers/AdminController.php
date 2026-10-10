@@ -100,7 +100,7 @@ class AdminController extends BaseController
     // }
     public function validateDeb()
     {
-        $debId = $this->request->getPost('devid');
+        $debId = preg_replace('/\s+/', '', trim((string) $this->request->getPost('devid')));
 
         if (empty($debId)) {
             return redirect()->back()->with('error', 'DEB ID is required');
@@ -108,7 +108,7 @@ class AdminController extends BaseController
 
         $clientId = "YVU0045_GetStudentDetails";
         $apiKey   = "oTXMK7mBcK42ffY2lWVc0wI0CsWBkmf7";
-        $url      = "https://deb.ugc.ac.in/api/DebUniqueID/GetStudentDetails?debUniqueId=".$debId;
+        $url      = 'https://deb.ugc.ac.in/api/DebUniqueID/GetStudentDetails?debUniqueId=' . rawurlencode($debId);
 
         $client = \Config\Services::curlrequest();
 
@@ -142,7 +142,9 @@ class AdminController extends BaseController
 
         } catch (\Exception $e) {
 
-            echo $e->getMessage(); // show real error
+            log_message('error', 'DEB validation API Error: ' . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Unable to validate DEB ID. Please check the DEB ID and try again.');
         }
     }
     // public function registerStudent()

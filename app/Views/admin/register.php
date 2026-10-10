@@ -57,9 +57,9 @@
                                 </div>
 
                             </div>
-                            <?php if (isset($error)): ?>
+                            <?php if (isset($error) || session()->getFlashdata('error')): ?>
                                 <div class="alert alert-danger text-center">
-                                    <?= $error ?>
+                                    <?= esc($error ?? session()->getFlashdata('error')) ?>
                                 </div>
                             <?php endif; ?>
                             <?php if (isset($validation)): ?>
