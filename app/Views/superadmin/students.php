@@ -226,7 +226,7 @@ foreach ($students as $s) {
 
     <label class="form-label">Export</label><br>
 
-    <a href="<?= base_url('superadmin/export-students-excel') ?>" 
+    <a id="exportStudentsExcel" href="<?= base_url('superadmin/export-students-excel?session=2026-06') ?>"
         class="btn btn-success btn-sm">
         Download June Session Excel
     </a>
@@ -431,6 +431,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         countBox.innerText = count;
+        document.getElementById("exportStudentsExcel").href = "<?= base_url('superadmin/export-students-excel') ?>?session=" + encodeURIComponent(sessionFilter.value);
     }
 
     checkbox.addEventListener("change", updateTable);
