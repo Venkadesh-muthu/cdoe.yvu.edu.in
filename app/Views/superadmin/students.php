@@ -228,7 +228,7 @@ foreach ($students as $s) {
 
     <a id="exportStudentsExcel" href="<?= base_url('superadmin/export-students-excel?session=2026-06') ?>"
         class="btn btn-success btn-sm">
-        Download June Session Excel
+        Download Session Excel
     </a>
 </div>
 

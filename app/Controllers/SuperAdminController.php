@@ -253,11 +253,11 @@ class SuperAdminController extends BaseController
         $session = $this->request->getGet('session');
         $session = in_array($session, ['2026-02', '2026-06'], true) ? $session : '2026-06';
 
+        // Existing records use session value 10, so the students page groups them by
+        // application date: Feb session is Feb-May and Jun session is June onward.
         $sessionCondition = $session === '2026-02'
-            ? "(LOWER(TRIM(COALESCE(deb_students.session, ''))) LIKE '%feb%'
-                OR TRIM(COALESCE(deb_students.session, '')) IN ('2', '02', '2026-02'))"
-            : "(LOWER(TRIM(COALESCE(deb_students.session, ''))) LIKE '%jun%'
-                OR TRIM(COALESCE(deb_students.session, '')) IN ('6', '06', '2026-06'))";
+            ? "applications.created_at >= '2026-02-01' AND applications.created_at < '2026-06-01'"
+            : "applications.created_at >= '2026-06-01'";
 
         $students = $this->applicationModel
         ->select('applications.*, 
@@ -272,14 +272,12 @@ class SuperAdminController extends BaseController
         ->join('centres', 'centres.id = applications.centre_id', 'left')
 
         // ✅ IMPORTANT CONDITION
-        ->where('deb_students.status', 1)
-
         ->where('applications.is_submitted', 1)
         ->where($sessionCondition, null, false)
         ->findAll();
 
         header("Content-Type: application/vnd.ms-excel");
-        header("Content-Disposition: attachment; filename=" . ($session === '2026-02' ? 'february_2026' : 'june_2026') . "_approved_students.xls");
+        header("Content-Disposition: attachment; filename=" . ($session === '2026-02' ? 'february_2026' : 'june_2026') . "_students.xls");
 
         echo "S.No\tApplication No\tStudent Name\tEmail\tMobile\tProgramme\tCentre Name\tCentre Type\tFull Name\tReligion\tSpecify Religion\tDOB\tGender\tCaste\tMarital Status\tNationality\tDomicile State\tAlt Email\tAnnual Income\tLocality\tID Proof\tID Number\tEmployment\tABC ID\tAadhar\tAadhar Mobile\tMinority\tDifferently Abled\tPermanent Address\tCommunication Address\tFather\tFather Occupation\tMother\tMother Occupation\tGuardian\tGuardian Mobile\tEducation\tPayment Mode\tTransaction ID\tPayment Date\tAmount\n";
 
