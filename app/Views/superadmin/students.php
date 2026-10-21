@@ -228,7 +228,7 @@ foreach ($students as $s) {
 
     <a href="<?= base_url('superadmin/export-students-excel') ?>" 
         class="btn btn-success btn-sm">
-        Download Full Excel
+        Download June Session Excel
     </a>
 </div>
 
@@ -267,16 +267,16 @@ foreach ($students as $s) {
 
 <?php
 $sessionValue = '';
-$sessionText = strtolower(trim((string)($student['admission_session'] ?? '')));
+    $sessionText = strtolower(trim((string)($student['admission_session'] ?? '')));
 
-if (strpos($sessionText, 'feb') !== false || $sessionText === '2' || $sessionText === '02') {
-    $sessionValue = '2026-02';
-} elseif (strpos($sessionText, 'jun') !== false || $sessionText === '6' || $sessionText === '06') {
-    $sessionValue = '2026-06';
-} elseif (!empty($student['created_at'])) {
-    $sessionValue = date('Y-m', strtotime($student['created_at']));
-}
-?>
+    if (strpos($sessionText, 'feb') !== false || $sessionText === '2' || $sessionText === '02') {
+        $sessionValue = '2026-02';
+    } elseif (strpos($sessionText, 'jun') !== false || $sessionText === '6' || $sessionText === '06') {
+        $sessionValue = '2026-06';
+    } elseif (!empty($student['created_at'])) {
+        $sessionValue = date('Y-m', strtotime($student['created_at']));
+    }
+    ?>
 
 <tr data-status="<?= $student['status'] ?>" data-session="<?= esc($sessionValue) ?>">
 

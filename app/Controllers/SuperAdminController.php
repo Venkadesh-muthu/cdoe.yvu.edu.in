@@ -246,6 +246,10 @@ class SuperAdminController extends BaseController
     }
     public function exportStudentsExcel()
     {
+        if ($redirect = $this->checkLogin()) {
+            return $redirect;
+        }
+
         $students = $this->applicationModel
         ->select('applications.*, 
                 deb_students.student_name,
@@ -262,10 +266,15 @@ class SuperAdminController extends BaseController
         ->where('deb_students.status', 1)
 
         ->where('applications.is_submitted', 1)
+        // Accept the session formats used by the imported June-session records.
+        ->groupStart()
+            ->like('LOWER(deb_students.session)', 'jun', 'both', false)
+            ->orWhereIn('deb_students.session', ['6', '06'])
+        ->groupEnd()
         ->findAll();
 
         header("Content-Type: application/vnd.ms-excel");
-        header("Content-Disposition: attachment; filename=approved_students.xls");
+        header("Content-Disposition: attachment; filename=june_2026_approved_students.xls");
 
         echo "S.No\tApplication No\tStudent Name\tEmail\tMobile\tProgramme\tCentre Name\tCentre Type\tFull Name\tReligion\tSpecify Religion\tDOB\tGender\tCaste\tMarital Status\tNationality\tDomicile State\tAlt Email\tAnnual Income\tLocality\tID Proof\tID Number\tEmployment\tABC ID\tAadhar\tAadhar Mobile\tMinority\tDifferently Abled\tPermanent Address\tCommunication Address\tFather\tFather Occupation\tMother\tMother Occupation\tGuardian\tGuardian Mobile\tEducation\tPayment Mode\tTransaction ID\tPayment Date\tAmount\n";
 
