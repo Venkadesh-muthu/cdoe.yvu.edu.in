@@ -228,7 +228,7 @@ foreach ($students as $s) {
 
     <a id="exportStudentsExcel" href="<?= base_url('superadmin/export-students-excel?session=2026-06') ?>"
         class="btn btn-success btn-sm">
-        Download Session Excel
+        <span id="exportStudentsExcelLabel">Download June Session Excel</span>
     </a>
 </div>
 
@@ -391,47 +391,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const checkbox = document.getElementById("approvedFilter");
     const sessionFilter = document.getElementById("sessionFilter");
-    const rows = document.querySelectorAll("#studentsTable tbody tr");
     const countBox = document.getElementById("approvedCount");
 
     function updateTable() {
 
-        let count = 0;
+        const table = window.studentsTable;
 
-        rows.forEach(row => {
+        if (table) {
+            table.draw();
 
-            let status = row.getAttribute("data-status");
-            let session = row.getAttribute("data-session");
-            let matchesSession = true;
-
-            if (sessionFilter.value === "2026-02") {
-                matchesSession = session >= "2026-02" && session <= "2026-05";
-            } else if (sessionFilter.value === "2026-06") {
-                matchesSession = session >= "2026-06";
-            }
-
-            if (checkbox.checked) {
-
-                if (status == "1" && matchesSession) {
-                    row.style.display = "";
-                    count++;
-                } else {
-                    row.style.display = "none";
-                }
-
-            } else {
-
-                row.style.display = matchesSession ? "" : "none";
-
-                if (status == "1" && matchesSession) {
+            let count = 0;
+            table.rows({ search: "applied" }).nodes().each(function (row) {
+                if (row.getAttribute("data-status") === "1") {
                     count++;
                 }
-            }
-
-        });
-
-        countBox.innerText = count;
-        document.getElementById("exportStudentsExcel").href = "<?= base_url('superadmin/export-students-excel') ?>?session=" + encodeURIComponent(sessionFilter.value);
+            });
+            countBox.innerText = count;
+        }
+        const exportSession = sessionFilter.value;
+        document.getElementById("exportStudentsExcel").href = "<?= base_url('superadmin/export-students-excel') ?>?session=" + encodeURIComponent(exportSession);
+        document.getElementById("exportStudentsExcelLabel").textContent = exportSession === "2026-02"
+            ? "Download February Session Excel"
+            : "Download June Session Excel";
     }
 
     checkbox.addEventListener("change", updateTable);

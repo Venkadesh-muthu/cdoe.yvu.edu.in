@@ -18,12 +18,36 @@
     <script>
 $(document).ready(function(){
 
+$.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+    if (settings.nTable.id !== 'studentsTable') {
+        return true;
+    }
+
+    var row = settings.aoData[dataIndex].nTr;
+    var selectedSession = $('#sessionFilter').val();
+    var studentSession = row.getAttribute('data-session') || '';
+    var isApproved = row.getAttribute('data-status') === '1';
+    var matchesSession = selectedSession === '2026-02'
+        ? studentSession >= '2026-02' && studentSession <= '2026-05'
+        : studentSession >= '2026-06';
+
+    return matchesSession && (!$('#approvedFilter').is(':checked') || isApproved);
+});
+
 var table = $('#studentsTable').DataTable({
     pageLength:10,
     lengthMenu:[10,25,50,100],
     ordering:true,
     scrollX:true
 });
+
+window.studentsTable = table;
+
+$('#sessionFilter, #approvedFilter').on('change', function(){
+    table.draw();
+});
+
+$('#sessionFilter').trigger('change');
 
 // Student Name filter
 $('#studentNameFilter').on('change', function(){
