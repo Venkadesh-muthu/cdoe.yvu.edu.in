@@ -228,7 +228,7 @@ foreach ($students as $s) {
 
     <a id="exportStudentsExcel" href="<?= base_url('superadmin/export-students-excel?session=2026-06') ?>"
         class="btn btn-success btn-sm">
-        <span id="exportStudentsExcelLabel">Download June Session Excel</span>
+        <span id="exportStudentsExcelLabel">Download June Session Approved Students Excel</span>
     </a>
 </div>
 
@@ -411,8 +411,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const exportSession = sessionFilter.value;
         document.getElementById("exportStudentsExcel").href = "<?= base_url('superadmin/export-students-excel') ?>?session=" + encodeURIComponent(exportSession);
         document.getElementById("exportStudentsExcelLabel").textContent = exportSession === "2026-02"
-            ? "Download February Session Excel"
-            : "Download June Session Excel";
+            ? "Download February Session Approved Students Excel"
+            : "Download June Session Approved Students Excel";
     }
 
     checkbox.addEventListener("change", updateTable);

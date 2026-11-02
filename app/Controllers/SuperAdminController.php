@@ -273,6 +273,7 @@ class SuperAdminController extends BaseController
 
         // ✅ IMPORTANT CONDITION
         ->where('applications.is_submitted', 1)
+        ->where('deb_students.status', 1)
         ->where($sessionCondition, null, false)
         ->findAll();
 
